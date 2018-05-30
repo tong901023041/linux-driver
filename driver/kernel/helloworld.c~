@@ -65,7 +65,7 @@ static ssize_t globalvar_read(struct file *filp,char __user *buf,size_t len,loff
        		return -EFAULT;
 	}
 	globalvar.rd += len;
-	if(globalvar.rd == globalvar.end)
+	f(globalvar.rd == globalvar.end)
         	globalvar.rd = globalvar.buffer;
 	up(&globalvar.sem);
 	return len;
