@@ -4,6 +4,7 @@
 #include <linux/fs.h>
 #include <linux/miscdevice.h>
 #include <asm/uaccess.h>
+#include <linux/kdev_t.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
 
@@ -22,7 +23,7 @@ struct dev{
 	char buffer[MAXNUM+1];
 	char *rd,*wr,*end;
 }globalvar;
-static struct class myclass;
+static struct class *myclass;
 int major = MAJORNUM;
 
 struct file_operations globalval_ops = {
@@ -74,6 +75,8 @@ static int __init hello_init(void)
 		globalvar.end = globalvar.buffer + MAXNUM;//缓冲区尾指针
 		globalvar.flag = 0; // 阻塞唤醒标志置 0
 	}
+	myclass = class_create(THIS_MODULE, "logdev0");
+	device_create(myclass, NULL, dev, NULL, "logdev0");
 	printk(KERN_INFO "Hello world,I'm in function %s!!!\n",__func__);  
 	return 0;  
 }  
@@ -84,3 +87,4 @@ static void __exit hello_exit(void)
     printk(KERN_INFO "Bye Bye,I'm in function %s!!!\n",__func__);  
 }  
 module_exit(hello_exit);
+MODULE_LICENSE("GPL");
